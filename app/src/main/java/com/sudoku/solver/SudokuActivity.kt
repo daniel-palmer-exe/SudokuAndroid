@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.sudoku.solver.ui.theme.SudokuSolverTheme
 import com.sudoku.solver.ui.view.SudokuGridView
 
-class MainActivity : ComponentActivity() {
+class SudokuActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {

@@ -1,5 +1,8 @@
 package com.sudoku.solver.data
 
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+
 open class GridModel {
 
     companion object {
@@ -12,17 +15,29 @@ open class GridModel {
         const val BOTTOM_LEFT = 6
         const val BOTTOM_CENTER = 7
         const val BOTTOM_RIGHT = 8
+
+        val ALL_OPTIONS = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+        val TOP_ROW =    arrayOf(0, 1, 2)
+        val CENTER_ROW = arrayOf(3, 4, 5)
+        val BOTTOM_ROW = arrayOf(6, 7, 8)
+        val ROWS = arrayOf(TOP_ROW, CENTER_ROW, BOTTOM_ROW)
+
+        val LEFT_COL =   arrayOf(0, 3, 6)
+        val CENTER_COL = arrayOf(1, 4, 7)
+        val RIGHT_COL =  arrayOf(2, 5, 8)
+        val COLS = arrayOf(LEFT_COL, CENTER_COL, RIGHT_COL)
     }
 
     class GridItem(val position: Int) {
         var solution: Int? = null
             set(value) {
                 field = value
-                this.value = value.toString()
+                this.value.value = value.toString()
             }
 
-        var value: String = ""
-        val options = arrayListOf<Int>(1, 2, 3, 4, 5, 6, 7, 8, 9)
+        var value = mutableStateOf("")
+        val options = mutableStateListOf(*ALL_OPTIONS)
     }
 
     class SubGrid(val position: Int) {
@@ -53,64 +68,68 @@ open class GridModel {
 }
 
 class SampleGridModel: GridModel() {
-
     init {
-        grid[TOP_LEFT].apply {
-            items[TOP_CENTER].solution = 7
-            items[CENTER_CENTER].solution = 6
-            items[BOTTOM_LEFT].solution = 2
+        populateSampleGrid(this)
+    }
+}
+
+fun populateSampleGrid(gridModel: GridModel) {
+    gridModel.apply {
+        grid[GridModel.TOP_LEFT].apply {
+            items[GridModel.TOP_CENTER].solution = 7
+            items[GridModel.CENTER_CENTER].solution = 6
+            items[GridModel.BOTTOM_LEFT].solution = 2
         }
-        grid[TOP_CENTER].apply {
-            items[TOP_CENTER].solution = 2
-            items[BOTTOM_LEFT].solution = 8
+        grid[GridModel.TOP_CENTER].apply {
+            items[GridModel.TOP_CENTER].solution = 2
+            items[GridModel.BOTTOM_LEFT].solution = 8
         }
-        grid[TOP_RIGHT].apply {
-            items[TOP_CENTER].solution = 4
-            items[TOP_RIGHT].solution = 6
-            items[CENTER_LEFT].solution = 8
-            items[CENTER_CENTER].solution = 9
-            items[BOTTOM_LEFT].solution = 7
-            items[BOTTOM_CENTER].solution = 1
-            items[BOTTOM_RIGHT].solution = 5
+        grid[GridModel.TOP_RIGHT].apply {
+            items[GridModel.TOP_CENTER].solution = 4
+            items[GridModel.TOP_RIGHT].solution = 6
+            items[GridModel.CENTER_LEFT].solution = 8
+            items[GridModel.CENTER_CENTER].solution = 9
+            items[GridModel.BOTTOM_LEFT].solution = 7
+            items[GridModel.BOTTOM_CENTER].solution = 1
+            items[GridModel.BOTTOM_RIGHT].solution = 5
         }
 
-        grid[CENTER_LEFT].apply {
-            items[TOP_CENTER].solution = 8
-            items[TOP_RIGHT].solution = 4
-            items[CENTER_LEFT].solution = 7
-            items[CENTER_CENTER].solution = 1
+        grid[GridModel.CENTER_LEFT].apply {
+            items[GridModel.TOP_CENTER].solution = 8
+            items[GridModel.TOP_RIGHT].solution = 4
+            items[GridModel.CENTER_LEFT].solution = 7
+            items[GridModel.CENTER_CENTER].solution = 1
         }
-        grid[CENTER_CENTER].apply {
-            items[TOP_CENTER].solution = 9
-            items[TOP_RIGHT].solution = 7
-            items[BOTTOM_LEFT].solution = 1
-            items[BOTTOM_CENTER].solution = 3
+        grid[GridModel.CENTER_CENTER].apply {
+            items[GridModel.TOP_CENTER].solution = 9
+            items[GridModel.TOP_RIGHT].solution = 7
+            items[GridModel.BOTTOM_LEFT].solution = 1
+            items[GridModel.BOTTOM_CENTER].solution = 3
         }
-        grid[CENTER_RIGHT].apply {
-            items[CENTER_CENTER].solution = 5
-            items[CENTER_RIGHT].solution = 9
-            items[BOTTOM_LEFT].solution = 4
-            items[BOTTOM_CENTER].solution = 8
+        grid[GridModel.CENTER_RIGHT].apply {
+            items[GridModel.CENTER_CENTER].solution = 5
+            items[GridModel.CENTER_RIGHT].solution = 9
+            items[GridModel.BOTTOM_LEFT].solution = 4
+            items[GridModel.BOTTOM_CENTER].solution = 8
         }
 
-        grid[BOTTOM_LEFT].apply {
-            items[TOP_LEFT].solution = 6
-            items[TOP_CENTER].solution = 9
-            items[TOP_RIGHT].solution = 7
-            items[CENTER_CENTER].solution = 5
-            items[CENTER_RIGHT].solution = 8
-            items[BOTTOM_LEFT].solution = 4
-            items[BOTTOM_CENTER].solution = 3
+        grid[GridModel.BOTTOM_LEFT].apply {
+            items[GridModel.TOP_LEFT].solution = 6
+            items[GridModel.TOP_CENTER].solution = 9
+            items[GridModel.TOP_RIGHT].solution = 7
+            items[GridModel.CENTER_CENTER].solution = 5
+            items[GridModel.CENTER_RIGHT].solution = 8
+            items[GridModel.BOTTOM_LEFT].solution = 4
+            items[GridModel.BOTTOM_CENTER].solution = 3
         }
-        grid[BOTTOM_CENTER].apply {
-            items[TOP_RIGHT].solution = 2
-            items[BOTTOM_CENTER].solution = 8
+        grid[GridModel.BOTTOM_CENTER].apply {
+            items[GridModel.TOP_RIGHT].solution = 2
+            items[GridModel.BOTTOM_CENTER].solution = 8
         }
-        grid[BOTTOM_RIGHT].apply {
-            items[TOP_RIGHT].solution = 8
-            items[CENTER_CENTER].solution = 6
-            items[BOTTOM_CENTER].solution = 7
+        grid[GridModel.BOTTOM_RIGHT].apply {
+            items[GridModel.TOP_RIGHT].solution = 8
+            items[GridModel.CENTER_CENTER].solution = 6
+            items[GridModel.BOTTOM_CENTER].solution = 7
         }
     }
-
 }
