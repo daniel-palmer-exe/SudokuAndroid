@@ -27,6 +27,12 @@ open class GridModel {
         val CENTER_COL = arrayOf(1, 4, 7)
         val RIGHT_COL =  arrayOf(2, 5, 8)
         val COLS = arrayOf(LEFT_COL, CENTER_COL, RIGHT_COL)
+
+        fun copy(other: GridModel) : GridModel {
+            val newGrid = GridModel()
+            newGrid.copy(other)
+            return newGrid
+        }
     }
 
     class GridItem(val position: Int) {
@@ -65,6 +71,14 @@ open class GridModel {
         SubGrid(7),
         SubGrid(8)
     )
+
+    fun copy(other: GridModel) {
+        for (i in 0..8) {
+            for (j in 0..8) {
+                grid[i].items[j].value.value = other.grid[i].items[j].value.value
+            }
+        }
+    }
 }
 
 class SampleGridModel: GridModel() {
@@ -130,6 +144,54 @@ fun populateSampleGrid(gridModel: GridModel) {
             items[GridModel.TOP_RIGHT].solution = 8
             items[GridModel.CENTER_CENTER].solution = 6
             items[GridModel.BOTTOM_CENTER].solution = 7
+        }
+    }
+}
+
+
+fun populateHardGrid(gridModel: GridModel) {
+    gridModel.apply {
+        grid[GridModel.TOP_LEFT].apply {
+            items[GridModel.TOP_CENTER].solution = 9
+            items[GridModel.BOTTOM_RIGHT].solution = 1
+        }
+        grid[GridModel.TOP_CENTER].apply {
+            items[GridModel.TOP_RIGHT].solution = 2
+            items[GridModel.CENTER_RIGHT].solution = 3
+            items[GridModel.BOTTOM_LEFT].solution = 9
+            items[GridModel.BOTTOM_CENTER].solution =6
+        }
+        grid[GridModel.TOP_RIGHT].apply {
+            items[GridModel.CENTER_RIGHT].solution = 6
+            items[GridModel.BOTTOM_CENTER].solution = 8
+        }
+
+        grid[GridModel.CENTER_LEFT].apply {
+            items[GridModel.TOP_LEFT].solution = 4
+            items[GridModel.BOTTOM_CENTER].solution = 3
+        }
+        grid[GridModel.CENTER_CENTER].apply {
+            items[GridModel.CENTER_RIGHT].solution = 6
+            items[GridModel.BOTTOM_LEFT].solution = 7
+            items[GridModel.BOTTOM_CENTER].solution = 5
+        }
+        grid[GridModel.CENTER_RIGHT].apply {
+            items[GridModel.TOP_CENTER].solution = 1
+            items[GridModel.BOTTOM_RIGHT].solution = 8
+        }
+
+        grid[GridModel.BOTTOM_LEFT].apply {
+            items[GridModel.CENTER_CENTER].solution = 7
+            items[GridModel.BOTTOM_RIGHT].solution = 3
+        }
+        grid[GridModel.BOTTOM_CENTER].apply {
+            items[GridModel.TOP_LEFT].solution = 2
+            items[GridModel.CENTER_LEFT].solution = 8
+            items[GridModel.CENTER_CENTER].solution = 9
+        }
+        grid[GridModel.BOTTOM_RIGHT].apply {
+            items[GridModel.CENTER_RIGHT].solution = 5
+            items[GridModel.BOTTOM_LEFT].solution = 7
         }
     }
 }

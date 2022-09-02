@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,11 +40,69 @@ import org.koin.core.component.get
 @Composable
 fun SudokuGridView(gridViewModel: SudokuGridViewModel = viewModel()) {
     val grid by gridViewModel.getGridModel()
-    val hints = gridViewModel.showHints()
-    SudokuGridContainer(grid, hints, valueChanged = { value, position, gridPosition ->
-        Log.d("SudokuGridView", "Updating $gridPosition-$position = $value")
-        gridViewModel.updateValue(value, position, gridPosition)
-    })
+    val hints by gridViewModel.showHints()
+
+    SudokuPlayContainer(
+        grid,
+        hints,
+        valueChanged = { value, position, gridPosition ->
+            gridViewModel.updateValue(value, position, gridPosition)
+        },
+        onHintsClicked = {
+            gridViewModel.toggleHints()
+        },
+        solveClicked = {
+            gridViewModel.solve()
+        },
+        clearClicked = {
+            gridViewModel.clear()
+        })
+}
+
+@Composable
+private fun SudokuPlayContainer(
+    grid: GridModel,
+    hints: Boolean,
+    valueChanged: ((value: String, position: Int, grid: Int) -> Unit)? = null,
+    onHintsClicked:(() -> Unit)? = null,
+    solveClicked:(() -> Unit)? = null,
+    clearClicked: (() -> Unit)? = null
+) {
+    Column(
+
+    ) {
+        Box(
+            Modifier.weight(1f)
+        ) {
+            SudokuGridContainer(grid, hints, valueChanged = { value, position, gridPosition ->
+                Log.d("SudokuGridView", "Updating $gridPosition-$position = $value")
+                valueChanged?.invoke(value, position, gridPosition)
+            })
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            modifier = Modifier.fillMaxWidth(1f)
+        ) {
+            Button(onClick = {
+                onHintsClicked?.invoke()
+            }) {
+                Text("Hints: ${if (hints) "On" else "Off"}")
+            }
+
+            Button(onClick = {
+                solveClicked?.invoke()
+            }) {
+                Text("Solve")
+            }
+
+            Button(onClick = {
+                clearClicked?.invoke()
+            }) {
+                Text("Clear")
+            }
+        }
+    }
 }
 
 @Composable
@@ -215,8 +275,8 @@ private fun SudokuGridItem(
 ) {
     ConstraintLayout(
         modifier = modifier
-            .border(1.dp, Color.Black)
             .fillMaxHeight(1f)
+            .border(Dp.Hairline, Color.Black)
     ) {
         val (valueText, helpRow) = createRefs()
         val value by gridItem.value
@@ -259,7 +319,7 @@ private fun SudokuGridItem(
             )
         }
 
-        if (hints) {
+        if (hints && gridItem.solution == null) {
             Row(modifier = Modifier
                 .clipToBounds()
                 .constrainAs(helpRow) {
@@ -281,6 +341,6 @@ private fun SudokuGridItem(
 @Composable
 fun SudokuGridViewPreview() {
     SudokuSolverTheme {
-        SudokuGridContainer(SampleGridModel(), true)
+        SudokuPlayContainer(SampleGridModel(), false)
     }
 }
